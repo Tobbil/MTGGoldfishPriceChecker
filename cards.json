@@ -1,0 +1,39 @@
+{
+  "cards": [
+    {
+      "id": 0,
+      "name": "Kefnet_the_Mindful",
+      "quantity": 1,
+      "foil": true,
+      "expansion": "Amonkhet"
+    },
+    {
+      "id": 1,
+      "name": "Sandwurm_Convergence",
+      "quantity": 1,
+      "foil": false,
+      "expansion": "Amonkhet"
+    },
+    {
+      "id": 2,
+      "name": "Soul-Scar_Mage",
+      "quantity": 4,
+      "foil": false,
+      "expansion": "Amonkhet"
+    },
+    {
+      "id": 3,
+      "name": "Oketra_the_True",
+      "quantity": 1,
+      "foil": false,
+      "expansion": "Amonkhet"
+    },
+    {
+      "id": 4,
+      "name": "As_Foretold",
+      "quantity": 1,
+      "foil": false,
+      "expansion": "Amonkhet"
+    }
+  ]
+}
