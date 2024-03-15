@@ -1,19 +1,10 @@
 import json
-import logging
 
 from datetime import date
 
-from helpers import calculate_diff, get_price_from_site
+from helpers import calculate_diff, get_price_from_site, setup_logging
 
-#TODO: SETUP LOGGING
-app_name = {"app_name": "PriceChecker"}
-LOGGER = logging.getLogger(__name__)
-syslog = logging.StreamHandler()
-formatter = logging.Formatter("[%(app_name)s]: %(message)s")
-syslog.setFormatter(formatter)
-LOGGER.setLevel(logging.INFO)
-LOGGER.addHandler(syslog)
-LOGGER = logging.LoggerAdapter(LOGGER, app_name)
+LOGGER = setup_logging()
 
 current_date = date.today()
 url_base = "https://www.mtggoldfish.com/price/"
