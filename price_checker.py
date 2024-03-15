@@ -1,13 +1,19 @@
 import json
 import logging
-import re
-import sys
-import requests
 
 from datetime import date
-from bs4 import BeautifulSoup
+
+from helpers import calculate_diff, get_price_from_site
 
 #TODO: SETUP LOGGING
+app_name = {"app_name": "PriceChecker"}
+LOGGER = logging.getLogger(__name__)
+syslog = logging.StreamHandler()
+formatter = logging.Formatter("[%(app_name)s]: %(message)s")
+syslog.setFormatter(formatter)
+LOGGER.setLevel(logging.INFO)
+LOGGER.addHandler(syslog)
+LOGGER = logging.LoggerAdapter(LOGGER, app_name)
 
 current_date = date.today()
 url_base = "https://www.mtggoldfish.com/price/"
@@ -19,22 +25,19 @@ prices = {"date": current_date.strftime("%d-%m-%Y"), "prices": {}, "diff": {}}
 
 for card in cards:
     card_name = card["name"].replace("_", "+")
-    if card["foil"] == True:
-        url = url_base + card["expansion"] + ":Foil/" + card_name
-    else:
-        url = url_base + card["expansion"] + "/" + card_name
+    url = url_base + card["expansion"] + (":Foil/" if card["foil"] else "/") + card_name
 
-    req = requests.get(url)
-    soup = BeautifulSoup(req.content, features="html.parser")
-
-    price_div = soup.select(".price-box-price")[0]
-    price_pattern = re.compile(r'[^\d.]+')
-    price = price_pattern.sub("", price_div.text)
-
+    LOGGER.info(f"Checking price for {card['name']}")
+    price = get_price_from_site(url)
+    LOGGER.info(f"Price: ${price}")
     prices["prices"].update({card["name"]: price})
-    #TODO: wyliczenie diff z wczoraj i dodanie do dicta
-    print(prices)
+
+    LOGGER.info(f"Checking price difference for {card['name']}")
+    diff = calculate_diff(card["name"], price)
+    LOGGER.info(f"Price difference: {'+' if diff >= 0 else ''}{diff}%")
+    prices["diff"].update({card["name"]: diff})
 
 with open(f"reports/{current_date.strftime('%d%m%Y')}.json", "w") as file:
+    LOGGER.info(f"Writing report to file: {file.name}")
     json.dump(prices, file)
 
