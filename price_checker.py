@@ -20,15 +20,16 @@ for card in cards:
 
     LOGGER.info(f"Checking price for {card['name'].upper()}")
     price = get_price_from_site(url)
-    LOGGER.info(f"Current price: --- ${price}")
+    if price:
+        LOGGER.info(f"Current price: --- ${price}")
     prices["prices"].update({card["name"]: price})
 
     LOGGER.info(f"Checking price difference for {card['name'].upper()}")
-    diff = calculate_diff(card["name"], price)
+    diff, last_report_date = calculate_diff(card["name"], price)
     if diff != None:
-        LOGGER.info(f"Price difference: {'+' if diff >= 0 else ''}{diff}%")
+        LOGGER.info(f"Price difference compared to {last_report_date}: {'+' if diff >= 0 else '-'}${abs(diff)}\n")
     else:
-        LOGGER.info(f"Unable to calculate price difference, no report file to compare with?")
+        LOGGER.info(f"Unable to calculate price difference, no report file to compare with or price is None\n")
 
     prices["diff_percent"].update({card["name"]: diff})
 
